@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	"log"
+	"net/http"
 )
 
 type User struct {
@@ -79,6 +80,20 @@ func main() {
 		context.Writer.Write([]byte(user.Username))
 	})
 
+	r.POST("/helloJson", func(context *gin.Context) {
+		var user User
+		err := context.ShouldBindJSON(&user)
+		if err != nil {
+			log.Fatalln(err.Error())
+			return
+		}
+		context.JSON(http.StatusUnprocessableEntity, gin.H{
+			"code":    1,
+			"message": "ok",
+			"data":    user,
+		})
+
+	})
 	if err := r.Run(); err != nil {
 		log.Fatalln(err.Error())
 
