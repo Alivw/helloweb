@@ -24,7 +24,7 @@ type Resp struct {
 	Data    interface{}
 }
 
-func main() {
+func main1() {
 	r := gin.Default()
 
 	//r.GET("/hello", func(context *gin.Context) {
@@ -93,7 +93,7 @@ func main() {
 			log.Fatalln(err.Error())
 			return
 		}
-		context.JSON(http.StatusUnprocessableEntity, gin.H{
+		context.JSON(http.StatusOK, gin.H{
 			"code":    1,
 			"message": "ok",
 			"data":    user,
@@ -111,8 +111,20 @@ func main() {
 		}
 
 		resp := Resp{Code: 1, Message: "ok", Data: user}
-		context.JSON(http.StatusUnprocessableEntity, &resp)
+		context.JSON(http.StatusOK, &resp)
 
+	})
+
+	// 设置html 目录
+	r.LoadHTMLGlob("./html/*")
+
+	// 设计静态资源目录
+	r.Static("/img", "./img")
+	r.GET("/hello/html", func(context *gin.Context) {
+		context.HTML(http.StatusOK, "index.html", gin.H{
+			"user":  "jalivv",
+			"Title": "gin教程",
+		})
 	})
 	if err := r.Run(); err != nil {
 		log.Fatalln(err.Error())
