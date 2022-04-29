@@ -18,6 +18,12 @@ type Student struct {
 	Classes string `form:"classes"`
 }
 
+type Resp struct {
+	Code    int
+	Message string
+	Data    interface{}
+}
+
 func main() {
 	r := gin.Default()
 
@@ -92,6 +98,20 @@ func main() {
 			"message": "ok",
 			"data":    user,
 		})
+
+	})
+
+	r.POST("/helloStruct", func(context *gin.Context) {
+
+		var user User
+		err := context.ShouldBindJSON(&user)
+		if err != nil {
+			log.Fatalln(err.Error())
+			return
+		}
+
+		resp := Resp{Code: 1, Message: "ok", Data: user}
+		context.JSON(http.StatusUnprocessableEntity, &resp)
 
 	})
 	if err := r.Run(); err != nil {
